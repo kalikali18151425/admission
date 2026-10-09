@@ -1,0 +1,352 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Application Details</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        .application-page {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .page-title p {
+            margin-top: 6px;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .application-card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 10px;
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px 40px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: #222;
+        }
+
+        .status {
+            display: inline-block;
+            width: fit-content;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #f2f2f2;
+            color: #333;
+            font-size: 12px;
+        }
+
+        .documents {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .document-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .document-item:last-child {
+            border-bottom: none;
+        }
+
+        .document-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .document-file {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 28px;
+            text-decoration: none;
+            color: #222;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .application-page {
+                margin: 25px auto;
+                padding: 0 15px;
+            }
+
+            .application-card {
+                padding: 20px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .page-title h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="application-page">
+
+    <div class="page-title">
+        <h1>Application Details</h1>
+        <p>University Admission Portal</p>
+    </div>
+
+
+    <div class="application-card">
+
+        <!-- Application Information -->
+        <div class="section">
+
+            <div class="section-title">
+                Application Information
+            </div>
+
+            <div class="info-grid">
+
+                <div class="info-item">
+                    <span class="info-label">Application ID</span>
+                    <span class="info-value">
+                        {{ application.application_id }}
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Status</span>
+                    {% if application.status == "Pending" %}
+    <span class="status status-pending">
+        Pending
+    </span>
+
+{% elif application.status == "Approved" %}
+    <span class="status status-approved">
+        Approved
+    </span>
+
+{% elif application.status == "Rejected" %}
+    <span class="status status-rejected">
+        Rejected
+    </span>
+
+{% endif %}
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Program</span>
+                    <span class="info-value">
+                        {{ application.program.name }}
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Department</span>
+                    <span class="info-value">
+                        {{ application.program.department }}
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">SSC Result</span>
+                    <span class="info-value">
+                        {{ application.ssc_result }}
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">HSC Result</span>
+                    <span class="info-value">
+                        {{ application.hsc_result }}
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Submitted</span>
+                    <span class="info-value">
+                        {{ application.submitted_at|date:"d M Y, h:i A" }}
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Personal Information -->
+        <div class="section">
+
+            <div class="section-title">
+                Personal Information
+            </div>
+
+            <div class="info-grid">
+
+                <div class="info-item">
+                    <span class="info-label">Name</span>
+                    <span class="info-value">
+                        {{ request.user.get_full_name }}
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Username</span>
+                    <span class="info-value">
+                        {{ request.user.username }}
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Email</span>
+                    <span class="info-value">
+                        {{ request.user.email }}
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Phone</span>
+                    <span class="info-value">
+                        {{ profile.phone }}
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Date of Birth</span>
+                    <span class="info-value">
+                        {{ profile.date_of_birth|date:"d M Y" }}
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Address</span>
+                    <span class="info-value">
+                        {{ profile.address }}
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Documents -->
+<div class="section">
+
+    <div class="section-title">
+        Submitted Documents
+    </div>
+
+    {% if documents %}
+
+        <div class="documents">
+
+            {% for document in documents %}
+
+                <div class="document-item">
+
+                    <div>
+                        <div class="document-name">
+                            {{ document.document_name }}
+                        </div>
+
+                        <div class="document-file">
+                            {{ document.file.name }}
+                        </div>
+                    </div>
+
+                    <a href="{% url 'document_download' document.pk %}"
+                       target="_blank"
+                       class="document-view">
+                        View
+                    </a>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <p class="document-file">
+            No documents submitted.
+        </p>
+
+    {% endif %}
+
+</div>
+
+
+        <a href="{% url 'dashboard' %}" class="back-link">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

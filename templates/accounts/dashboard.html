@@ -1,0 +1,220 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Student Dashboard</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <div class="dashboard-header">
+
+        <h1>University Admission Portal</h1>
+
+        <p>
+            Welcome, <strong>{{ request.user.username }}</strong>
+        </p>
+
+    </div>
+
+
+    <div class="dashboard-card">
+
+        <h2>Student Dashboard</h2>
+
+        <p class="dashboard-description">
+            Manage your admission application and student information.
+        </p>
+
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="message">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+
+        {% if application %}
+
+            <!-- Application Information -->
+
+            <div class="application-status">
+
+                <h3>Application Information</h3>
+
+                <p>
+                    <strong>Application ID:</strong>
+                    {{ application.application_id }}
+                </p>
+
+                <p>
+                    <strong>Program:</strong>
+                    {{ application.program.name }}
+                </p>
+
+                <p>
+                    <strong>Department:</strong>
+                    {{ application.program.department }}
+                </p>
+
+                <p>
+                    <strong>SSC Result:</strong>
+                    {{ application.ssc_result }}
+                </p>
+
+                <p>
+                    <strong>HSC Result:</strong>
+                    {{ application.hsc_result }}
+                </p>
+
+                <p>
+                    <strong>Submitted:</strong>
+                    {{ application.submitted_at|date:"d M Y, h:i A" }}
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+
+                    <span class="status">
+                        {{ application.status }}
+                    </span>
+
+                </p>
+
+            </div>
+
+
+        {% else %}
+
+            <!-- No Application -->
+
+            <div class="application-status">
+
+                <h3>Application Status</h3>
+
+                <span class="status">
+                    Not Applied
+                </span>
+
+                <p class="dashboard-description">
+                    You have not submitted an admission application yet.
+                </p>
+
+            </div>
+
+        {% endif %}
+<div class="dashboard-section">
+
+    <h3>Notifications</h3>
+
+    {% if notifications %}
+
+        {% for notification in notifications %}
+
+            <div class="notification-item">
+
+                <p>{{ notification.message }}</p>
+
+                <small>
+                    {{ notification.created_at|date:"d M Y, h:i A" }}
+                </small>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p class="no-notifications">
+            No notifications yet.
+        </p>
+
+    {% endif %}
+
+</div>
+
+        <!-- Dashboard Links -->
+
+        <div class="dashboard-links">
+
+            {% if not application %}
+
+                <a href="{% url 'apply_admission' %}">
+                    Apply for Admission
+                </a>
+
+            {% endif %}
+
+            <a href="{% url 'profile' %}">
+                My Profile
+            </a>
+
+            <a href="{% url 'manage_documents' %}">
+                My Documents
+            </a>
+
+            <a href="{% url 'profile' %}">Edit Profile</a>
+
+            {% if application %}
+
+                <a href="{% url 'application_details' %}">
+    Application Details
+    </a>
+
+                {% if admission_records %}
+                    <a href="{% url 'my_student_record' %}">My permanent student record</a>
+                {% endif %}
+
+                <a href="{% url 'print_application' %}" target="_blank">Print Application / Receipt</a>
+
+                {% if application.status == "Approved" %}
+                    <form method="post" action="{% url 'confirm_admission' %}">
+                        {% csrf_token %}
+                        <button class="dashboard-action" type="submit">Confirm Admission</button>
+                    </form>
+                {% endif %}
+
+        {% endif %}
+
+        {% if application %}
+            <div class="application-status">
+                <h3>Admission Result</h3>
+                <p><strong>Result:</strong> {{ application.admission_result }}</p>
+                {% if application.result_notes %}<p>{{ application.result_notes }}</p>{% endif %}
+                {% if application.fee %}
+                    <p><strong>Application fee:</strong> ৳{{ application.fee.amount }} — {{ application.fee.status }}</p>
+                    {% if application.fee.status == "Paid" and application.fee.payment_reference %}<p><strong>Payment reference:</strong> {{ application.fee.payment_reference }}</p>{% endif %}
+                {% endif %}
+            </div>
+        {% endif %}
+
+        </div>
+
+
+        <div class="logout-area">
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="logout-button" type="submit">Logout</button>
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,225 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Institute of Science, Trade &amp; Technology | Admissions</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style-home.css' %}?v=4">
+</head>
+<body class="istt-home" id="top">
+    <div class="istt-topbar">
+        <div class="istt-wrap topbar-inner">
+            <span>Mirpur, Dhaka, Bangladesh</span>
+            <span>National University College Code: 6471 &nbsp; | &nbsp; BTEB Code: 50051</span>
+        </div>
+    </div>
+
+    <header class="istt-header">
+        <div class="istt-wrap header-inner">
+            <a class="istt-logo" href="{% url 'home' %}" aria-label="ISTT homepage">
+                <img src="{% static 'images/istt-logo.png' %}" alt="Institute of Science, Trade & Technology, Dhaka">
+            </a>
+            <nav class="istt-nav" aria-label="Main navigation">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="#programs">Programs</a>
+                <a href="#about">About ISTT</a>
+                {% if homepage_notices %}<a href="#announcements">Notices</a>{% endif %}
+                {% if user.is_authenticated %}
+                    {% if is_admissions_admin %}
+                        <a class="istt-nav-cta" href="{% url 'student_workspace' %}">Admin dashboard</a>
+                    {% else %}
+                        <a class="istt-nav-cta" href="{% url 'dashboard' %}">Dashboard</a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'login' %}">Login</a>
+                    <a href="{% url 'login' %}">Admin login</a>
+                    <a class="istt-nav-cta" href="{% url 'register' %}">Register</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="istt-hero">
+            <div class="istt-wrap hero-inner">
+                <div class="hero-content">
+                    <p class="istt-kicker">INSTITUTE OF SCIENCE, TRADE &amp; TECHNOLOGY</p>
+                    <h1>Learn today.<br><span>Build your future.</span></h1>
+                    <p class="hero-lede">Explore professional education in science, business, engineering, and technology at ISTT.</p>
+                    <div class="hero-actions">
+                        {% if is_admissions_admin %}
+                            <a class="istt-button" href="{% url 'student_workspace' %}">Open admin dashboard <span aria-hidden="true">→</span></a>
+                        {% elif user.is_authenticated %}
+                            <a class="istt-button" href="{% url 'dashboard' %}">Go to your dashboard</a>
+                        {% else %}
+                            <a class="istt-button" href="{% url 'register' %}">Apply for admission <span aria-hidden="true">→</span></a>
+                            <a class="istt-text-link" href="{% url 'login' %}">Already registered? Login</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <aside class="admission-card">
+                    <span class="admission-mark">ISTT</span>
+                    <p class="card-label">ADMISSIONS</p>
+                    <h2>Your next step starts here.</h2>
+                    <p>Create an account to begin your application and track updates from your student dashboard.</p>
+                    {% if is_admissions_admin %}
+                        <a href="{% url 'student_workspace' %}">Open admin dashboard <span aria-hidden="true">→</span></a>
+                    {% elif user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}">Open dashboard <span aria-hidden="true">→</span></a>
+                    {% else %}
+                        <a href="{% url 'register' %}">Start your application <span aria-hidden="true">→</span></a>
+                    {% endif %}
+                </aside>
+            </div>
+        </section>
+
+        {% if homepage_notices %}
+        <section class="home-notices" id="announcements" aria-labelledby="notices-title">
+            <div class="istt-wrap">
+                <div class="home-notices-heading">
+                    <div><p class="istt-kicker">STAY INFORMED</p><h2 id="notices-title">Notices &amp; announcements</h2><p>Updates from the ISTT admissions office.</p></div>
+                    <span class="home-notices-count">{{ homepage_notices|length }} update{{ homepage_notices|length|pluralize }}</span>
+                </div>
+                <div class="home-notices-list">
+                    {% for notice in homepage_notices %}
+                    <article class="home-notice-card">
+                        <div class="home-notice-meta"><span class="home-notice-dot" aria-hidden="true"></span><time datetime="{{ notice.updated_at|date:'c' }}">{{ notice.updated_at|date:"d M Y" }}</time><span class="home-notice-label">ISTT NOTICE</span></div>
+                        <h3>{{ notice.title }}</h3>
+                        <p>{{ notice.message|linebreaksbr }}</p>
+                        {% if notice.link_url %}<a href="{{ notice.link_url }}" target="_blank" rel="noopener noreferrer">{{ notice.link_label|default:"Read details" }} <span aria-hidden="true">↗</span></a>{% endif %}
+                    </article>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <section class="istt-wrap program-section" id="programs">
+            <div class="section-heading">
+                <div><p class="istt-kicker">FIND YOUR PROGRAM</p><h2>Choose your path</h2></div>
+                <p>Explore study options at the Institute of Science, Trade &amp; Technology.</p>
+            </div>
+            <div class="program-grid">
+                <article class="program-card">
+                    <span class="program-number">01</span><h3>Bachelor’s</h3>
+                    <p>Professional bachelor’s programs in business, engineering, and technology.</p>
+                    <a href="{% url 'register' %}">Explore admission <span aria-hidden="true">→</span></a>
+                </article>
+                <article class="program-card">
+                    <span class="program-number">02</span><h3>Diploma</h3>
+                    <p>Practical technical education across a range of career-focused disciplines.</p>
+                    <a href="{% url 'register' %}">Explore admission <span aria-hidden="true">→</span></a>
+                </article>
+                <article class="program-card">
+                    <span class="program-number">03</span><h3>Master’s</h3>
+                    <p>Advanced study options to continue your academic and professional growth.</p>
+                    <a href="{% url 'register' %}">Explore admission <span aria-hidden="true">→</span></a>
+                </article>
+            </div>
+        </section>
+
+        <section class="about-section" id="about">
+            <div class="istt-wrap">
+                <div class="about-intro">
+                    <div class="about-copy">
+                        <p class="istt-kicker">ABOUT THE INSTITUTE</p>
+                        <h2>Professional education with a purpose.</h2>
+                        <p class="about-lede">The Institute of Science, Trade &amp; Technology (ISTT) is a professional and technical higher education institute in Dhaka, Bangladesh.</p>
+                        <p>Established in 1998, ISTT is directed by the Advanced Welfare Foundation. Its academic programs are offered under the affiliation of the National University and the Bangladesh Technical Education Board.</p>
+                        <a class="about-source-link" href="https://istt.edu.bd/introduction/" target="_blank" rel="noopener">Read ISTT’s introduction <span aria-hidden="true">↗</span></a>
+                    </div>
+                    <aside class="about-glance" aria-label="ISTT at a glance">
+                        <div class="glance-heading"><span>ISTT</span><h3>At a glance</h3></div>
+                        <div class="glance-grid">
+                            <div><strong>1998</strong><span>Year established</span></div>
+                            <div><strong>2</strong><span>Affiliating bodies</span></div>
+                            <div><strong>6471</strong><span>National University college code</span></div>
+                            <div><strong>50051</strong><span>BTEB college code</span></div>
+                        </div>
+                    </aside>
+                </div>
+
+                <div class="about-details">
+                    <article class="mission-card">
+                        <p class="istt-kicker">OUR MOTTO</p>
+                        <h3>Transform human into capital.</h3>
+                        <p>ISTT’s stated aim is to provide quality education that supports students’ academic progress, professional goals, and contribution to national development.</p>
+                        <a href="https://istt.edu.bd/aims-objective/" target="_blank" rel="noopener">Mission &amp; vision <span aria-hidden="true">↗</span></a>
+                    </article>
+                    <article class="about-pathways">
+                        <p class="istt-kicker">ACADEMIC PATHWAYS</p>
+                        <h3>Study at ISTT</h3>
+                        <ul>
+                            <li><span>01</span>Master’s programs</li>
+                            <li><span>02</span>Bachelor’s programs</li>
+                            <li><span>03</span>Diploma programs</li>
+                        </ul>
+                        <a href="https://istt.edu.bd/approval-affiliation/" target="_blank" rel="noopener">View affiliations &amp; approved courses <span aria-hidden="true">↗</span></a>
+                    </article>
+                </div>
+
+                <div class="about-campus">
+                    <div><span class="campus-marker" aria-hidden="true">⌖</span><div><strong>Permanent campus</strong><p>Plot 1/9, Road 2, Block D, Section 15, Mirpur, Dhaka-1216, Bangladesh.</p></div></div>
+                    <a href="https://istt.edu.bd/contact/" target="_blank" rel="noopener">Contact ISTT <span aria-hidden="true">↗</span></a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="istt-footer">
+        <div class="istt-wrap footer-main">
+            <section class="footer-brand" aria-labelledby="footer-istt-title">
+                <h2 id="footer-istt-title">Institute of Science Trade &amp;<br>Technology (ISTT)</h2>
+                <p>College Code: National University- 6471,<br>BTEB- 50051</p>
+                <p>Permanent Campus: Plot: 1/9, Road: 2,<br>Block: D, Section: 15, Mirpur, Dhaka-1216,<br>Bangladesh (13 No Notun Bazar)</p>
+            </section>
+
+            <nav class="footer-column" aria-label="Academic programs">
+                <h2>Academic</h2>
+                <a href="https://istt.edu.bd/bachelors-program/" target="_blank" rel="noopener noreferrer">Bachelors Program</a>
+                <a href="https://istt.edu.bd/masters-program/" target="_blank" rel="noopener noreferrer">Masters Program</a>
+                <a href="https://istt.edu.bd/diploma-program/" target="_blank" rel="noopener noreferrer">Diploma Program</a>
+            </nav>
+
+            <nav class="footer-column" aria-label="Useful education links">
+                <h2>Useful Links</h2>
+                <a href="https://bteb.gov.bd/" target="_blank" rel="noopener noreferrer">Bangladesh Technical Education Board</a>
+                <a href="https://www.nubd.info/" target="_blank" rel="noopener noreferrer">National University</a>
+                <a href="https://moedu.gov.bd/" target="_blank" rel="noopener noreferrer">Ministry of Education, Bangladesh</a>
+                <a href="https://www.educationboard.gov.bd/" target="_blank" rel="noopener noreferrer">Education Board Bangladesh</a>
+                <a href="https://bangladesh.gov.bd/" target="_blank" rel="noopener noreferrer">Government of Bangladesh</a>
+            </nav>
+
+            <nav class="footer-column" aria-label="ISTT resources">
+                <h2>Resources</h2>
+                <a href="https://istt.edu.bd/code-of-conduct/" target="_blank" rel="noopener noreferrer">Code of Conduct</a>
+                <a href="https://istt.edu.bd/career/" target="_blank" rel="noopener noreferrer">Career</a>
+                <a href="https://istt.edu.bd/faq/" target="_blank" rel="noopener noreferrer">FAQ</a>
+                <a href="https://istt.edu.bd/research/" target="_blank" rel="noopener noreferrer">Research</a>
+                <a href="https://istt.edu.bd/contact/" target="_blank" rel="noopener noreferrer">Contact</a>
+            </nav>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="istt-wrap footer-bottom-inner">
+                <span>Copyright {% now "Y" %} © Institute of Science Trade &amp; Technology</span>
+                <div class="footer-social">
+                    <span>Follow Us:</span>
+                    <a href="https://www.facebook.com/isttdhaka" target="_blank" rel="noopener noreferrer" aria-label="ISTT on Facebook">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.4 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.2v2.2H7.5V13h2.7v8h3.2z"/></svg>
+                    </a>
+                    <a href="https://www.youtube.com/@ISTT1998" target="_blank" rel="noopener noreferrer" aria-label="ISTT on YouTube">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z"/></svg>
+                    </a>
+                    <a href="https://wa.me/8801805023000" target="_blank" rel="noopener noreferrer" aria-label="Contact ISTT on WhatsApp">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11.9 11.9 0 0 0 1.8 17.8L.2 23.6l6-1.6A11.9 11.9 0 0 0 20.5 3.5ZM12 21a9 9 0 0 1-4.6-1.3l-.3-.2-3.5.9.9-3.4-.2-.4A9 9 0 1 1 12 21Zm4.9-6.8c-.3-.1-1.6-.8-1.9-.9-.2-.1-.4-.1-.6.2l-.9 1.1c-.2.2-.3.2-.6.1a7.4 7.4 0 0 1-2.2-1.4 8.2 8.2 0 0 1-1.5-1.9c-.2-.3 0-.4.1-.6l.4-.5.3-.5c.1-.2 0-.4 0-.5l-.9-2.1c-.2-.5-.5-.4-.6-.4h-.6c-.2 0-.5.1-.7.4-.3.3-.9.9-.9 2.2 0 1.3 1 2.6 1.1 2.8.1.2 1.9 2.9 4.6 4.1.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.6-.7 1.8-1.3.2-.6.2-1.1.1-1.3 0-.2-.2-.3-.5-.4Z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <a class="footer-back-top" href="#top" aria-label="Back to top">↑</a>
+    </footer>
+</body>
+</html>

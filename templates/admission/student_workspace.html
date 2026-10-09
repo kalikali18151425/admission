@@ -1,0 +1,183 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admissions Administration | ISTT</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/student-workspace.css' %}?v=4">
+</head>
+<body class="review-page">
+    <div class="review-contactbar">
+        <div class="review-contact-inner"><span>Mirpur, Dhaka, Bangladesh</span><span>National University College Code: 6471 &nbsp; | &nbsp; BTEB Code: 50051</span></div>
+    </div>
+    <header class="review-header">
+        <div class="review-header-inner">
+            <a class="review-logo" href="{% url 'home' %}" aria-label="Institute of Science, Trade & Technology homepage"><img src="{% static 'images/istt-logo.png' %}" alt="Institute of Science, Trade & Technology, Dhaka"></a>
+            <div class="admin-label"><span>Admissions administration</span><strong>STAFF WORKSPACE</strong></div>
+            <nav class="review-nav" aria-label="Staff navigation"><a href="{% url 'home' %}">Home</a><a href="{% url 'manage_homepage_notices' %}">Homepage notices</a><a href="{% url 'admin:index' %}">Admin panel</a><form class="review-logout-form" method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="review-signout" type="submit">Sign out</button></form></nav>
+        </div>
+    </header>
+
+    <main class="review-shell">
+        <div class="review-heading">
+            <div><p class="eyebrow">ISTT · ADMISSIONS OFFICE</p><h1>Admissions dashboard</h1><p class="review-subtitle">A clear view of student records, application decisions, documents, and fees.</p></div>
+            <div class="review-heading-tools"><a class="notices-dashboard-link" href="{% url 'manage_homepage_notices' %}">Homepage notices <span>{{ overview.active_notice_count }}</span></a><span class="record-count">{{ students|length }} student{{ students|length|pluralize }}</span></div>
+        </div>
+
+        {% if messages %}<div class="workspace-messages">{% for message in messages %}<div class="workspace-message {{ message.tags }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+
+        <section class="overview-grid" aria-label="Admissions overview">
+            <a class="overview-card overview-students{% if overview_view == 'students' %} is-selected{% endif %}" href="?view=students#overview-results"{% if overview_view == 'students' %} aria-current="page"{% endif %}><span class="overview-icon" aria-hidden="true">♙</span><div><span>Student records</span><strong>{{ overview.student_count }}</strong><small>Registered applicant profiles</small></div></a>
+            <a class="overview-card overview-applications{% if overview_view == 'applications' %} is-selected{% endif %}" href="?view=applications#overview-results"{% if overview_view == 'applications' %} aria-current="page"{% endif %}><span class="overview-icon" aria-hidden="true">▤</span><div><span>Applications</span><strong>{{ overview.application_count }}</strong><small>Submitted across all students</small></div></a>
+            <a class="overview-card overview-pending{% if overview_view == 'pending' %} is-selected{% endif %}" href="?view=pending#overview-results"{% if overview_view == 'pending' %} aria-current="page"{% endif %}><span class="overview-icon" aria-hidden="true">◷</span><div><span>Pending review</span><strong>{{ overview.pending_count }}</strong><small>Applications awaiting a decision</small></div></a>
+            <a class="overview-card overview-fees{% if overview_view == 'fees' %} is-selected{% endif %}" href="?view=fees#overview-results"{% if overview_view == 'fees' %} aria-current="page"{% endif %}><span class="overview-icon" aria-hidden="true">৳</span><div><span>Fees pending</span><strong>{{ overview.unpaid_count }}</strong><small>Application fees not marked paid</small></div></a>
+        </section>
+
+        {% if overview_view %}
+        <section class="overview-results" id="overview-results" aria-live="polite">
+            <div class="overview-results-heading">
+                <div><p class="eyebrow">ADMISSIONS RECORDS</p><h2>{% if overview_view == "students" %}Student records{% elif overview_view == "applications" %}All applications{% elif overview_view == "pending" %}Applications pending review{% else %}Fees pending{% endif %}</h2></div>
+                <a class="return-dashboard" href="{% url 'student_workspace' %}">Back to overview</a>
+            </div>
+            {% if overview_view == "students" %}
+                <div class="records-table-wrap"><table class="records-table"><thead><tr><th>Student</th><th>Email</th><th>Phone</th><th>Applications</th><th></th></tr></thead><tbody>
+                    {% for record in student_records %}
+                    <tr><td><strong>{{ record.user.get_full_name|default:record.user.username }}</strong><small>@{{ record.user.username }}</small></td><td>{{ record.user.email|default:"—" }}</td><td>{{ record.phone|default:"—" }}</td><td><span class="table-count">{{ record.application_count }}</span></td><td><a class="table-action" href="{% url 'student_workspace' %}?student={{ record.pk }}">Open record <span aria-hidden="true">→</span></a></td></tr>
+                    {% empty %}<tr><td colspan="5" class="table-empty">No student records yet.</td></tr>{% endfor %}
+                </tbody></table></div>
+            {% else %}
+                <div class="records-table-wrap"><table class="records-table"><thead><tr><th>Application</th><th>Student</th><th>Program</th><th>Status</th><th>Fee</th><th></th></tr></thead><tbody>
+                    {% for item in overview_applications %}
+                    <tr><td><strong>{{ item.application_id }}</strong><small>{{ item.submitted_at|date:"d M Y · h:i A" }}</small></td><td>{{ item.student.user.get_full_name|default:item.student.user.username }}</td><td>{{ item.program.name }}</td><td><span class="table-status status-{{ item.status|lower }}">{{ item.status }}</span></td><td><strong>৳{{ item.fee.amount|default:"1,000" }}</strong><small>{% if item.fee.status == "Paid" %}<span class="fee-paid">Paid</span>{% else %}<span class="fee-pending">Pending</span>{% endif %}</small></td><td><a class="table-action" href="{% url 'student_workspace' %}?student={{ item.student_id }}&amp;application={{ item.pk }}">Review <span aria-hidden="true">→</span></a></td></tr>
+                    {% empty %}<tr><td colspan="6" class="table-empty">No matching applications.</td></tr>{% endfor %}
+                </tbody></table></div>
+            {% endif %}
+        </section>
+        {% else %}
+        <form class="student-picker" method="get">
+            <div class="picker-heading"><div><p class="eyebrow">REVIEW A STUDENT</p><label for="student-select">Choose student record</label></div><span>{{ students|length }} total</span></div>
+            <select id="student-select" name="student" onchange="this.form.submit()">
+                {% for student in students %}
+                    <option value="{{ student.pk }}" {% if profile.pk == student.pk %}selected{% endif %}>
+                        {% if student.user.get_full_name %}{{ student.user.get_full_name }}{% else %}{{ student.user.username }}{% endif %} · {{ student.user.email|default:"No email" }}
+                    </option>
+                {% empty %}<option>No student records yet</option>{% endfor %}
+            </select>
+            <span class="picker-icon" aria-hidden="true">⌄</span>
+        </form>
+
+        {% if profile %}
+        <section class="student-card" aria-label="Student profile">
+            <div class="student-avatar">
+                {% if profile.photo %}<img src="{% url 'student_photo' profile.pk %}" alt="">
+                {% else %}<span>{{ profile.user.first_name|default:profile.user.username|slice:":1"|upper }}</span>{% endif %}
+            </div>
+            <div class="student-identity">
+                <p class="eyebrow">STUDENT PROFILE</p>
+                <h2>{% if profile.user.get_full_name %}{{ profile.user.get_full_name }}{% else %}{{ profile.user.username }}{% endif %}</h2>
+                <p>{{ profile.user.email|default:"Email not provided" }} <span class="identity-divider">·</span> {{ profile.phone|default:"Phone not provided" }}</p>
+            </div>
+            <div class="student-facts">
+                <div><span>Username</span><strong>{{ profile.user.username }}</strong></div>
+                <div><span>Date of birth</span><strong>{% if profile.date_of_birth %}{{ profile.date_of_birth|date:"d M Y" }}{% else %}Not provided{% endif %}</strong></div>
+                <div><span>Address</span><strong>{{ profile.address|default:"Not provided" }}</strong></div>
+            </div>
+        </section>
+
+        <section class="applications-section">
+            <div class="section-heading">
+                <div><p class="eyebrow">APPLICATION HISTORY</p><h2>Applications <span>{{ applications|length }}</span></h2></div>
+                {% if active_application %}<p class="switch-hint"><span class="hint-dot"></span> Select an application to view its documents</p>{% endif %}
+            </div>
+
+            {% if applications %}
+                <div class="application-tabs" role="tablist" aria-label="Student applications">
+                    {% for application in applications %}
+                    <button class="application-tab{% if application.pk == active_application.pk %} is-active{% endif %}" type="button" role="tab" aria-selected="{% if application.pk == active_application.pk %}true{% else %}false{% endif %}" aria-controls="application-panel-{{ application.pk }}" id="application-tab-{{ application.pk }}" data-application-tab="{{ application.pk }}">
+                        <span class="tab-program">{{ application.program.name }}</span>
+                        <span class="tab-meta">{{ application.application_id }} <i>·</i> {{ application.submitted_at|date:"d M Y" }}</span>
+                        <span class="status-pill status-{{ application.status|lower }}">{{ application.status }}</span>
+                    </button>
+                    {% endfor %}
+                </div>
+
+                {% for application in applications %}
+                <section class="application-panel{% if application.pk != active_application.pk %} is-hidden{% endif %}" role="tabpanel" id="application-panel-{{ application.pk }}" aria-labelledby="application-tab-{{ application.pk }}" data-application-panel="{{ application.pk }}" {% if application.pk != active_application.pk %}hidden{% endif %}>
+                    <div class="application-summary">
+                        <div><span class="summary-label">PROGRAM</span><strong>{{ application.program.name }}</strong><small>{{ application.program.department }}</small></div>
+                        <div><span class="summary-label">APPLICATION ID</span><strong>{{ application.application_id }}</strong><small>Submitted {{ application.submitted_at|date:"d M Y, h:i A" }}</small></div>
+                        <div><span class="summary-label">SSC / HSC GPA</span><strong>{{ application.ssc_result }} / {{ application.hsc_result }}</strong><small>Academic results</small></div>
+                        <div><span class="summary-label">ADMISSION</span><strong>{{ application.status }} · {{ application.admission_result }}</strong><small>{% if application.result_notes %}{{ application.result_notes }}{% else %}No reviewer notes{% endif %}</small></div>
+                    </div>
+                    {% if application.status == "Confirmed" and application.student_record %}
+                    <div class="staff-record-callout"><div><span class="record-callout-mark" aria-hidden="true">▣</span><div><strong>Permanent student record</strong><small>{{ application.student_record.record_number }} · Documents and payment history</small></div></div><a href="{% url 'staff_student_record' application.student_record.pk %}">Open full record <span aria-hidden="true">→</span></a></div>
+                    {% endif %}
+
+                    <div class="review-actions">
+                        <section class="action-card decision-card">
+                            <div><h3>Application decision</h3><p>Current status: <strong>{{ application.status }}</strong></p></div>
+                            <div class="action-buttons">
+                                <form method="post">{% csrf_token %}<input type="hidden" name="student_id" value="{{ profile.pk }}"><input type="hidden" name="application_id" value="{{ application.pk }}"><button class="action-button approve-button" name="action" value="approve" type="submit">Approve</button></form>
+                                <form method="post">{% csrf_token %}<input type="hidden" name="student_id" value="{{ profile.pk }}"><input type="hidden" name="application_id" value="{{ application.pk }}"><button class="action-button reject-button" name="action" value="reject" type="submit">Reject</button></form>
+                            </div>
+                        </section>
+                        <section class="action-card payment-card">
+                            <div><h3>Application fee</h3><p>{% if application.fee %}৳{{ application.fee.amount }} · {{ application.fee.status }}{% else %}৳1,000 · Pending{% endif %}</p></div>
+                            {% if application.fee.status != "Paid" %}
+                            <form class="payment-form" method="post">{% csrf_token %}<input type="hidden" name="student_id" value="{{ profile.pk }}"><input type="hidden" name="application_id" value="{{ application.pk }}"><input type="hidden" name="action" value="payment"><input name="payment_reference" type="text" placeholder="Payment reference (optional)" aria-label="Payment reference"><button class="action-button approve-button" type="submit">Accept payment</button></form>
+                            {% else %}<span class="paid-label">Paid{% if application.fee.paid_at %} · {{ application.fee.paid_at|date:"d M Y" }}{% endif %}</span>{% endif %}
+                        </section>
+                        <section class="action-card notification-card">
+                            <div><h3>Send notification</h3><p>Send a message to this student.</p></div>
+                            <form class="notification-form" method="post">{% csrf_token %}<input type="hidden" name="student_id" value="{{ profile.pk }}"><input type="hidden" name="application_id" value="{{ application.pk }}"><input type="hidden" name="action" value="notify"><textarea name="message" rows="2" placeholder="Write a notification…" required></textarea><button class="action-button notify-button" type="submit">Send notification</button></form>
+                        </section>
+                    </div>
+                    <div class="documents-heading"><div><p class="eyebrow">UPLOADED FILES</p><h3>Documents <span>{{ application.document_set.all|length }}</span></h3></div><p>Files submitted with this application</p></div>
+                    <div class="document-list">
+                        {% for document in application.document_set.all %}
+                        <article class="document-row">
+                            <span class="file-icon" aria-hidden="true">{% if document.file.name|lower|slice:"-4:" == ".pdf" %}PDF{% else %}IMG{% endif %}</span>
+                            <div class="document-info"><strong>{{ document.document_name }}</strong><span>{{ document.file.name|cut:"documents/" }}</span></div>
+                            <a class="view-file" href="{% url 'document_download' document.pk %}">Download file <span aria-hidden="true">↧</span></a>
+                        </article>
+                        {% empty %}
+                        <div class="empty-documents"><span class="empty-icon">▧</span><div><strong>No documents uploaded</strong><p>This application has no attached documents.</p></div></div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endfor %}
+            {% else %}
+                <div class="empty-record"><span class="empty-icon">▤</span><h3>No applications yet</h3><p>This student profile does not have an application on file.</p></div>
+            {% endif %}
+        </section>
+        {% else %}
+        <section class="empty-record empty-students"><span class="empty-icon">♙</span><h2>No student records yet</h2><p>Student profiles will appear here after they submit an application.</p></section>
+        {% endif %}
+        {% endif %}
+
+    </main>
+    <footer class="review-footer">
+            <div class="review-footer-inner"><div><strong>Institute of Science, Trade &amp; Technology</strong><p>Plot 1/9, Road 2, Block D, Section 15, Mirpur, Dhaka-1216, Bangladesh.</p></div><a href="{% url 'home' %}">ISTT homepage</a></div>
+            <div class="review-footer-bottom">Institute of Science, Trade &amp; Technology (ISTT) <span>Authorized admissions staff workspace</span></div>
+    </footer>
+    <script>
+        document.querySelectorAll('[data-application-tab]').forEach((tab) => {
+            tab.addEventListener('click', () => {
+                const selectedId = tab.dataset.applicationTab;
+                document.querySelectorAll('[data-application-tab]').forEach((item) => {
+                    const selected = item === tab;
+                    item.classList.toggle('is-active', selected);
+                    item.setAttribute('aria-selected', String(selected));
+                });
+                document.querySelectorAll('[data-application-panel]').forEach((panel) => {
+                    const selected = panel.dataset.applicationPanel === selectedId;
+                    panel.hidden = !selected;
+                    panel.classList.toggle('is-hidden', !selected);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

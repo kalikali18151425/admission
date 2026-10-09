@@ -1,0 +1,64 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Homepage Notices | ISTT Admissions</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/student-workspace.css' %}?v=4">
+</head>
+<body class="review-page">
+    <div class="review-contactbar"><div class="review-contact-inner"><span>Mirpur, Dhaka, Bangladesh</span><span>National University College Code: 6471 &nbsp; | &nbsp; BTEB Code: 50051</span></div></div>
+    <header class="review-header">
+        <div class="review-header-inner">
+            <a class="review-logo" href="{% url 'home' %}" aria-label="ISTT homepage"><img src="{% static 'images/istt-logo.png' %}" alt="Institute of Science, Trade & Technology, Dhaka"></a>
+            <div class="admin-label"><span>Admissions administration</span><strong>HOMEPAGE CONTENT</strong></div>
+            <nav class="review-nav" aria-label="Staff navigation"><a href="{% url 'student_workspace' %}">Review dashboard</a><a href="{% url 'home' %}" target="_blank" rel="noopener">View homepage</a><a href="{% url 'admin:index' %}">Admin panel</a><form class="review-logout-form" method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="review-signout" type="submit">Sign out</button></form></nav>
+        </div>
+    </header>
+
+    <main class="notice-manager-shell">
+        <div class="notice-manager-heading">
+            <div><p class="eyebrow">PUBLIC HOMEPAGE</p><h1>Notices &amp; announcements</h1><p>Publish important updates for applicants and visitors.</p></div>
+            <span class="record-count">{{ active_notice_count }} published</span>
+        </div>
+
+        {% if messages %}<div class="workspace-messages">{% for message in messages %}<div class="workspace-message {{ message.tags }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+
+        <div class="notice-manager-grid">
+            <section class="notice-editor-card">
+                <div class="notice-editor-heading"><div><p class="eyebrow">{% if editing_notice %}UPDATE NOTICE{% else %}NEW NOTICE{% endif %}</p><h2>{% if editing_notice %}Edit announcement{% else %}Create announcement{% endif %}</h2></div><span class="notice-editor-mark" aria-hidden="true">＋</span></div>
+                <form method="post" class="notice-editor-form">
+                    {% csrf_token %}
+                    {% if editing_notice %}<input type="hidden" name="notice_id" value="{{ editing_notice.pk }}">{% endif %}
+                    {% if form.non_field_errors %}<div class="notice-form-errors">{{ form.non_field_errors }}</div>{% endif %}
+                    <div class="notice-field"><label for="{{ form.title.id_for_label }}">Notice title</label>{{ form.title }}{{ form.title.errors }}</div>
+                    <div class="notice-field"><label for="{{ form.message.id_for_label }}">Message</label>{{ form.message }}<small>Keep it clear and brief. Maximum 1,200 characters.</small>{{ form.message.errors }}</div>
+                    <div class="notice-field"><label for="{{ form.link_url.id_for_label }}">Optional link</label>{{ form.link_url }}{{ form.link_url.errors }}</div>
+                    <div class="notice-field"><label for="{{ form.link_label.id_for_label }}">Link text</label>{{ form.link_label }}{{ form.link_label.errors }}</div>
+                    <label class="notice-publish-toggle">{{ form.is_active }}<span><strong>Show on homepage</strong><small>Turn off to save this as a draft.</small></span></label>
+                    <div class="notice-form-actions"><button class="notice-save-button" type="submit">{% if editing_notice %}Save changes{% else %}Publish notice{% endif %}<span aria-hidden="true">→</span></button>{% if editing_notice %}<a href="{% url 'manage_homepage_notices' %}">Cancel</a>{% endif %}</div>
+                </form>
+            </section>
+
+            <section class="notice-list-card">
+                <div class="notice-list-heading"><div><p class="eyebrow">NOTICE LIBRARY</p><h2>All announcements <span>{{ notices|length }}</span></h2></div><a href="{% url 'home' %}" target="_blank" rel="noopener">Preview homepage ↗</a></div>
+                <div class="managed-notice-list">
+                    {% for notice in notices %}
+                    <article class="managed-notice{% if not notice.is_active %} is-archived{% endif %}">
+                        <div class="managed-notice-top"><span class="notice-state{% if notice.is_active %} is-live{% endif %}">{% if notice.is_active %}Published{% else %}Draft / archived{% endif %}</span><time datetime="{{ notice.updated_at|date:'c' }}">Updated {{ notice.updated_at|date:"d M Y, h:i A" }}</time></div>
+                        <h3>{{ notice.title }}</h3><p>{{ notice.message|truncatechars:190 }}</p>
+                        <div class="managed-notice-actions"><a class="notice-edit-link" href="{% url 'manage_homepage_notices' %}?edit={{ notice.pk }}">Edit</a><form method="post">{% csrf_token %}<input type="hidden" name="notice_id" value="{{ notice.pk }}"><input type="hidden" name="action" value="toggle"><button class="notice-toggle-button" type="submit">{% if notice.is_active %}Archive{% else %}Publish{% endif %}</button></form></div>
+                    </article>
+                    {% empty %}
+                    <div class="notice-library-empty"><span aria-hidden="true">◷</span><h3>No announcements yet</h3><p>Create a notice to show your first update on the homepage.</p></div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="review-footer"><div class="review-footer-inner"><div><strong>Institute of Science, Trade &amp; Technology</strong><p>Plot 1/9, Road 2, Block D, Section 15, Mirpur, Dhaka-1216, Bangladesh.</p></div><a href="{% url 'home' %}">ISTT homepage</a></div><div class="review-footer-bottom">Institute of Science, Trade &amp; Technology (ISTT) <span>Authorized admissions staff workspace</span></div></footer>
+</body>
+</html>

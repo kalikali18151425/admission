@@ -1,0 +1,63 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Student Record | ISTT</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/student-record.css' %}?v=1">
+</head>
+<body class="record-page">
+    <div class="record-topbar"><div class="record-wrap"><span>Mirpur, Dhaka, Bangladesh</span><span>ISTT · Admissions</span></div></div>
+    <header class="record-header">
+        <div class="record-wrap record-header-inner">
+            <a href="{% url 'home' %}" class="record-logo" aria-label="ISTT homepage"><img src="{% static 'images/istt-logo.png' %}" alt="Institute of Science, Trade & Technology"></a>
+            <nav aria-label="Record navigation"><a href="{% if staff_view %}{% url 'student_workspace' %}?student={{ profile.pk }}{% else %}{% url 'dashboard' %}{% endif %}">← Back to {% if staff_view %}review dashboard{% else %}dashboard{% endif %}</a></nav>
+        </div>
+    </header>
+
+    <main class="record-wrap record-main">
+        <section class="record-hero">
+            <div class="record-hero-main"><p class="record-kicker">{% if staff_view %}ADMISSIONS OFFICE · SECURE RECORD{% else %}YOUR ISTT ADMISSION FILE{% endif %}</p><h1>Student record</h1><p class="record-student-name">{{ profile.user.get_full_name|default:profile.user.username }}</p><p class="record-student-meta">{{ profile.user.email|default:"Email not provided" }} <span>·</span> {{ profile.phone|default:"Phone not provided" }}</p></div>
+            <div class="record-hero-side"><span class="record-check" aria-hidden="true">✓</span><span>Admission confirmed</span><small>{{ admission_records|length }} record{{ admission_records|length|pluralize }}</small></div>
+        </section>
+
+        <div class="record-intro"><div><span class="record-intro-icon" aria-hidden="true">▤</span><p>This secure page keeps confirmed admission details, submitted documents, and payment history together.</p></div><span>Private student file</span></div>
+
+        {% for record in admission_records %}
+        <article class="permanent-record-card">
+            <header class="permanent-record-header"><div><p class="record-kicker">PERMANENT ADMISSION RECORD</p><h2>{{ record.record_number }}</h2></div><span class="confirmed-chip">Confirmed</span></header>
+            <section class="record-application-summary" aria-label="Admission details">
+                <div><span>Program</span><strong>{{ record.application.program.name }}</strong><small>{{ record.application.program.department }}</small></div>
+                <div><span>Application ID</span><strong>{{ record.application.application_id }}</strong><small>Submitted {{ record.application.submitted_at|date:"d M Y" }}</small></div>
+                <div><span>Record created</span><strong>{{ record.created_at|date:"d M Y" }}</strong><small>Admission status: Confirmed</small></div>
+                <div><span>Academic results</span><strong>SSC {{ record.application.ssc_result }} · HSC {{ record.application.hsc_result }}</strong><small>Admission result: {{ record.application.admission_result }}</small></div>
+            </section>
+
+            <div class="record-sections-grid">
+                <section class="record-section">
+                    <div class="record-section-heading"><div><p class="record-kicker">APPLICATION FILE</p><h3>Documents <span>{{ record.application.document_set.all|length }}</span></h3></div><span class="record-section-icon" aria-hidden="true">▧</span></div>
+                    <div class="record-document-list">
+                        {% for document in record.application.document_set.all %}
+                        <div class="record-document"><span class="record-file-type">{% if document.file.name|lower|slice:"-4:" == ".pdf" %}PDF{% else %}FILE{% endif %}</span><div><strong>{{ document.document_name }}</strong><small>{{ document.file.name|cut:"documents/" }}</small></div><a href="{% url 'document_download' document.pk %}" aria-label="Download {{ document.document_name }}">Download <span aria-hidden="true">↗</span></a></div>
+                        {% empty %}<div class="record-empty-item">No documents are attached to this application.</div>{% endfor %}
+                    </div>
+                </section>
+
+                <section class="record-section">
+                    <div class="record-section-heading"><div><p class="record-kicker">FEE LEDGER</p><h3>Payment history <span>{{ record.application.payment_history.all|length }}</span></h3></div><span class="record-section-icon payment-icon" aria-hidden="true">৳</span></div>
+                    <div class="payment-history-list">
+                        {% for payment in record.application.payment_history.all %}
+                        <article class="payment-history-item"><span class="payment-history-dot{% if payment.status == 'Paid' %} is-paid{% endif %}" aria-hidden="true"></span><div class="payment-history-details"><div class="payment-history-title"><strong>৳{{ payment.amount }}</strong><span class="payment-chip{% if payment.status == 'Paid' %} is-paid{% endif %}">{{ payment.status }}</span></div><small>{{ payment.recorded_at|date:"d M Y, h:i A" }}{% if payment.recorded_by %} · Recorded by {{ payment.recorded_by.get_full_name|default:payment.recorded_by.username }}{% endif %}</small>{% if payment.payment_reference %}<small>Reference: {{ payment.payment_reference }}</small>{% endif %}{% if payment.note %}<small>{{ payment.note }}</small>{% endif %}</div></article>
+                        {% empty %}<div class="record-empty-item">No payment events have been recorded.</div>{% endfor %}
+                    </div>
+                </section>
+            </div>
+        </article>
+        {% endfor %}
+    </main>
+
+    <footer class="record-footer"><div class="record-wrap"><span>Institute of Science, Trade &amp; Technology (ISTT)</span><span>Student record · Private and secure</span></div></footer>
+</body>
+</html>

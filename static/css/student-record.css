@@ -1,0 +1,91 @@
+.record-page { --record-blue: #173b8f; --record-red: #c82032; --record-ink: #182338; --record-muted: #6f7c91; --record-line: #e5eaf2; margin: 0; background: #f4f6fa; color: var(--record-ink); font-family: Inter, "Segoe UI", Arial, sans-serif; text-decoration: none; }
+.record-page * { box-sizing: border-box; }
+.record-wrap { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+.record-topbar { background: #142e68; color: #e7edfb; font-size: 11px; }
+.record-topbar .record-wrap { min-height: 34px; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+.record-header { border-bottom: 1px solid #e8ebf1; background: #fff; }
+.record-header-inner { min-height: 84px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.record-logo { display: block; width: min(380px, 54%); line-height: 0; }
+.record-logo img { display: block; max-width: 100%; max-height: 68px; object-fit: contain; object-position: left center; }
+.record-header nav a { color: #40516d; font-size: 12px; font-weight: 650; text-decoration: none; }
+.record-header nav a:hover { color: var(--record-blue); }
+.record-main { padding-top: 31px; padding-bottom: 48px; }
+.record-hero { display: flex; align-items: center; justify-content: space-between; gap: 25px; padding: 28px 32px; border-radius: 14px; background: linear-gradient(115deg, #122d6b 0%, #1b438f 65%, #2b58a5 100%); color: #fff; box-shadow: 0 12px 28px rgba(19, 47, 107, .16); }
+.record-kicker { margin: 0 0 7px; color: #7888a7; font-size: 9px; font-weight: 800; letter-spacing: .13em; }
+.record-hero .record-kicker { color: #d6def0; }
+.record-hero h1 { margin: 0; color: #fff; font-size: clamp(28px, 3vw, 35px); letter-spacing: -.7px; }
+.record-student-name { margin: 12px 0 3px; color: #fff; font-size: 17px; font-weight: 650; }
+.record-student-meta { margin: 0; color: #d8e1f2; font-size: 12px; }
+.record-student-meta span { padding: 0 5px; color: #9caed3; }
+.record-hero-side { min-width: 155px; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px; border: 1px solid rgba(255,255,255,.22); border-radius: 11px; background: rgba(255,255,255,.09); color: #fff; font-size: 11px; font-weight: 650; }
+.record-check { width: 31px; height: 31px; display: grid; place-items: center; border-radius: 50%; background: #ddf6e8; color: #24754b; font-size: 17px; }
+.record-hero-side small { color: #d4def1; font-size: 10px; font-weight: 400; }
+.record-intro { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin: 17px 0; padding: 13px 16px; border: 1px solid #e3e9f2; border-radius: 9px; background: #fff; }
+.record-intro > div { display: flex; align-items: center; gap: 11px; }
+.record-intro p { margin: 0; color: #5e6b80; font-size: 11px; line-height: 1.5; }
+.record-intro > span { color: #728097; font-size: 10px; white-space: nowrap; }
+.record-intro-icon { width: 28px; height: 28px; display: grid; place-items: center; flex: 0 0 28px; border-radius: 8px; background: #edf3ff; color: var(--record-blue); font-size: 15px; }
+.permanent-record-card { margin-top: 17px; overflow: hidden; border: 1px solid var(--record-line); border-radius: 13px; background: #fff; box-shadow: 0 8px 24px rgba(26, 45, 79, .05); }
+.permanent-record-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 21px 23px; border-bottom: 1px solid #edf0f5; }
+.permanent-record-header .record-kicker { margin-bottom: 4px; }
+.permanent-record-header h2 { margin: 0; color: #202d43; font-size: 18px; letter-spacing: .02em; }
+.confirmed-chip { padding: 6px 10px; border-radius: 999px; background: #e8f5ee; color: #237347; font-size: 10px; font-weight: 700; }
+.record-application-summary { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1.2fr; gap: 15px; padding: 19px 22px; background: #fafbfe; border-bottom: 1px solid #edf0f5; }
+.record-application-summary > div { min-width: 0; display: flex; flex-direction: column; gap: 5px; padding-left: 12px; border-left: 2px solid #e6ecf5; }
+.record-application-summary > div:first-child { border-left-color: #8ea8df; }
+.record-application-summary span { color: #7d899b; font-size: 9px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+.record-application-summary strong { overflow: hidden; color: #24334c; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.record-application-summary small { overflow: hidden; color: #8994a5; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.record-sections-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 17px; padding: 20px; }
+.record-section { min-width: 0; overflow: hidden; border: 1px solid #e8ecf2; border-radius: 10px; }
+.record-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 15px 16px; border-bottom: 1px solid #edf0f5; }
+.record-section-heading .record-kicker { margin-bottom: 4px; }
+.record-section-heading h3 { margin: 0; color: #25334a; font-size: 15px; }
+.record-section-heading h3 span { display: inline-grid; min-width: 20px; height: 20px; place-items: center; margin-left: 4px; padding: 0 5px; border-radius: 999px; background: #edf3ff; color: var(--record-blue); font-size: 9px; vertical-align: middle; }
+.record-section-icon { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 9px; background: #edf3ff; color: var(--record-blue); font-size: 15px; }
+.record-section-icon.payment-icon { background: #eaf7f0; color: #237347; }
+.record-document-list, .payment-history-list { padding: 0 15px; }
+.record-document { min-height: 62px; display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eff1f5; }
+.record-document:last-child, .payment-history-item:last-child { border-bottom: 0; }
+.record-file-type { width: 33px; height: 35px; display: grid; place-items: center; flex: 0 0 33px; border-radius: 8px; background: #f0f4ff; color: var(--record-blue); font-size: 8px; font-weight: 800; }
+.record-document > div { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.record-document strong { overflow: hidden; color: #29374d; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.record-document small { overflow: hidden; color: #8a95a5; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.record-document a { padding: 6px 8px; border: 1px solid #dfe6f2; border-radius: 6px; color: var(--record-blue); font-size: 9px; font-weight: 650; text-decoration: none; white-space: nowrap; }
+.record-document a:hover { background: #f5f8ff; }
+.payment-history-item { display: flex; gap: 10px; padding: 13px 0; border-bottom: 1px solid #eff1f5; }
+.payment-history-dot { width: 8px; height: 8px; flex: 0 0 8px; margin-top: 5px; border-radius: 50%; background: #d19a35; box-shadow: 0 0 0 3px #fff5df; }
+.payment-history-dot.is-paid { background: #35a16b; box-shadow: 0 0 0 3px #e8f5ee; }
+.payment-history-details { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.payment-history-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.payment-history-title strong { color: #26344b; font-size: 12px; }
+.payment-chip { padding: 3px 7px; border-radius: 999px; background: #fff4db; color: #8b671b; font-size: 8px; font-weight: 700; }
+.payment-chip.is-paid { background: #e8f5ee; color: #237347; }
+.payment-history-details small { color: #818c9d; font-size: 9px; line-height: 1.45; overflow-wrap: anywhere; }
+.record-empty-item { padding: 22px 5px; color: #8792a4; font-size: 10px; line-height: 1.5; }
+.record-footer { padding: 16px 0; background: #142e68; color: #dce5f5; font-size: 10px; }
+.record-footer .record-wrap { display: flex; justify-content: space-between; gap: 14px; }
+@media (max-width: 850px) {
+    .record-application-summary { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .record-sections-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+    .record-wrap { width: calc(100% - 30px); }
+    .record-topbar .record-wrap { min-height: 30px; font-size: 9px; }
+    .record-header-inner { min-height: 70px; }
+    .record-logo { width: 64%; }
+    .record-header nav a { font-size: 10px; }
+    .record-main { padding-top: 20px; padding-bottom: 30px; }
+    .record-hero { align-items: flex-start; padding: 21px 18px; }
+    .record-hero-side { min-width: 100px; padding: 10px 8px; font-size: 9px; }
+    .record-student-name { font-size: 14px; }
+    .record-student-meta { max-width: 230px; font-size: 10px; overflow-wrap: anywhere; }
+    .record-intro { align-items: flex-start; }
+    .record-intro > span { display: none; }
+    .permanent-record-header { padding: 17px; }
+    .record-application-summary { gap: 12px; padding: 15px; }
+    .record-sections-grid { gap: 12px; padding: 13px; }
+    .record-section-heading { padding: 13px; }
+    .record-document-list, .payment-history-list { padding: 0 11px; }
+    .record-footer .record-wrap { flex-direction: column; }
+}

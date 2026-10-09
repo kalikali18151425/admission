@@ -1,0 +1,274 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Apply for Admission</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <div class="dashboard-header">
+
+        <h1>University Admission Portal</h1>
+
+        <p>
+            Complete your admission application
+        </p>
+
+    </div>
+
+
+    <div class="dashboard-card">
+
+        <h2>Apply for Admission</h2>
+
+        <p class="dashboard-description">
+            Please provide accurate information.
+        </p>
+
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="message">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+
+            <!-- Personal Information -->
+
+            <h3 class="form-section-title">
+                Personal Information
+            </h3>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Full Name</label>
+
+                    <input
+                        type="text"
+                        name="full_name"
+                        placeholder="Enter your full name"
+                        value="{{ request.user.first_name }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Phone Number</label>
+
+                    <input
+                        type="text"
+                        name="phone"
+                        placeholder="Enter phone number"
+                        value="{{ profile.phone|default:'' }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Date of Birth</label>
+
+                    <input
+                        type="date"
+                        name="date_of_birth"
+                        value="{{ profile.date_of_birth|date:'Y-m-d' }}"
+                    >
+
+                </div>
+
+
+                <div class="form-group full-width">
+
+                    <label>Address</label>
+
+                    <textarea
+                        name="address"
+                        placeholder="Enter your address"
+                        required
+                    >{{ profile.address|default:'' }}</textarea>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Photo</label>
+
+                    <input
+                        type="file"
+                        name="photo"
+                        accept="image/*"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Academic Information -->
+
+            <h3 class="form-section-title">
+                Academic Information
+            </h3>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>SSC Result</label>
+
+                    <input
+                        type="number"
+                        name="ssc_result"
+                        step="0.01"
+                        min="0"
+                        max="5"
+                        placeholder="Example: 4.50"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>HSC Result</label>
+
+                    <input
+                        type="number"
+                        name="hsc_result"
+                        step="0.01"
+                        min="0"
+                        max="5"
+                        placeholder="Example: 4.75"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- Program -->
+
+            <h3 class="form-section-title">
+                Program Selection
+            </h3>
+
+
+            <div class="form-group">
+
+                <label>Select Program</label>
+
+                <select name="program" required>
+
+                    <option value="">
+                        Select a program
+                    </option>
+
+                    {% for program in programs %}
+
+                        <option value="{{ program.id }}">
+
+                            {{ program.name }}
+
+                            {% if program.department %}
+                                — {{ program.department }}
+                            {% endif %}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- Documents -->
+
+            <h3 class="form-section-title">
+                Documents
+            </h3>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>SSC Certificate</label>
+
+                    <input
+                        type="file"
+                        name="ssc_certificate"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>HSC Certificate</label>
+
+                    <input
+                        type="file"
+                        name="hsc_certificate"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button type="submit" class="btn">
+
+                Submit Application
+
+            </button>
+
+
+        </form>
+
+
+        <div class="logout-area">
+
+            <a href="{% url 'dashboard' %}">
+                Back to Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
